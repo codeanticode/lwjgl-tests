@@ -13,6 +13,7 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -23,6 +24,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.PixelFormat;
+
+import test.utils.ShaderUtils;
 
 @SuppressWarnings("serial")
 public class DispApplet extends Applet implements Runnable {
@@ -163,17 +166,17 @@ public class DispApplet extends Applet implements Runnable {
       // Disables vsync
       Display.setVSyncEnabled(false);  
     }
-    
+        
     String vertSource = ""; 
     try {
-      vertSource = ShaderUtils.loadShaderSource("landscape.vp");
+      vertSource = ShaderUtils.loadShaderSource(DispApplet.class.getResource("shaders" + File.separator + "landscape.vp"));
     } catch (Exception e) {
       e.printStackTrace();
     }    
     
     String fragSource = ""; 
     try {
-      fragSource = ShaderUtils.loadShaderSource("landscape.fp");
+      fragSource = ShaderUtils.loadShaderSource(DispApplet.class.getResource("shaders" + File.separator + "landscape.fp"));
     } catch (Exception e) {
       e.printStackTrace();
     }

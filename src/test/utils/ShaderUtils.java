@@ -1,4 +1,4 @@
-package test.applet;
+package test.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -66,9 +66,8 @@ public class ShaderUtils {
     return GL20.glGetProgramInfoLog(prog, len);
   }  
 
-  public static String loadShaderSource(String name) throws 
+  public static String loadShaderSource(URL url) throws 
   FileNotFoundException, IOException, URISyntaxException {
-    URL url = ShaderUtils.class.getResource("shaders" + File.separator + name);
     File file = new File(url.toURI());
     BufferedReader br = new BufferedReader(new FileReader(file));
     String source = "";
