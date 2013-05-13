@@ -1,0 +1,1 @@
+This repository contains a self-contained Eclipse project with several Java programs to test LWJGL functionality
