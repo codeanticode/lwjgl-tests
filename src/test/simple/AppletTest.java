@@ -20,13 +20,9 @@ public class AppletTest extends Applet {
   static public int width  = 500;
   static public int height = 290;
 
-  Canvas display_parent;
-  
-  /** Thread which runs the main game loop */
-  Thread gameThread;
-  
-  /** is the game loop running */
-  boolean running = false;  
+  private Canvas canvas;  
+  private Thread thread;
+  private boolean running = false;  
   
   private int vertShader;
   private int fragShader;
@@ -44,25 +40,24 @@ public class AppletTest extends Applet {
   private float frameRate;    
   
   public void startLWJGL() {
-    gameThread = new Thread() {
+    thread = new Thread() {
       public void run() {
         running = true;
         millisInit = System.currentTimeMillis();
         frameCount = 1;
         try {
-          Display.setParent(display_parent);
+          Display.setParent(canvas);
           Display.create();
-          initGL();
+          setup();
         } catch (LWJGLException e) {
           e.printStackTrace();
           return;
         }
-        gameLoop();
+        drawLoop();
       }
     };
-    gameThread.start();
+    thread.start();
   }
-  
   
   /**
    * Tell game loop to stop running, after which the LWJGL Display will 
@@ -71,19 +66,15 @@ public class AppletTest extends Applet {
   private void stopLWJGL() {
     running = false;
     try {
-      gameThread.join();
+      thread.join();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
   }
 
-  public void start() {
-    
-  }
+  public void start() { }
 
-  public void stop() {
-    
-  }
+  public void stop() { }
   
   /**
    * Applet Destroy method will remove the canvas, 
@@ -91,14 +82,14 @@ public class AppletTest extends Applet {
    * to stop the main game loop and to destroy the Display
    */
   public void destroy() {
-    remove(display_parent);
+    remove(canvas);
     super.destroy();
   }
   
   public void init() {
     setLayout(new BorderLayout());
     try {
-      display_parent = new Canvas() {
+      canvas = new Canvas() {
         public final void addNotify() {
           super.addNotify();
           startLWJGL();
@@ -109,11 +100,11 @@ public class AppletTest extends Applet {
         }
       };
       setSize(width, height);
-      display_parent.setSize(getWidth(),getHeight());
-      add(display_parent);
-      display_parent.setFocusable(true);
-      display_parent.requestFocus();
-      display_parent.setIgnoreRepaint(true);
+      canvas.setSize(getWidth(),getHeight());
+      add(canvas);
+      canvas.setFocusable(true);
+      canvas.requestFocus();
+      canvas.setIgnoreRepaint(true);
       setVisible(true);
     } catch (Exception e) {
       System.err.println(e);
@@ -121,7 +112,7 @@ public class AppletTest extends Applet {
     }
   }
 
-  protected void initGL() {
+  private void setup() {
     String vertSource = ""; 
     try {
       vertSource = ShaderUtils.loadShaderSource(AppletTest.class.getResource("shaders" + File.separator + "landscape.vp"));
@@ -150,41 +141,42 @@ public class AppletTest extends Applet {
                                +1.0f, +1.0f });         
   }
   
-  public void gameLoop() {
-    while(running) {
-      GL11.glClearColor(0.5f, 0.1f, 0.1f, 1);
-      GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+  private void drawLoop() {
+    while(running) draw();
+    Display.destroy();
+  }
+  
+  private void draw() {
+    GL11.glClearColor(0.5f, 0.1f, 0.1f, 1);
+    GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-      GL20.glUseProgram(shaderProg);   
-      GL20.glUniform3f(resLoc, (float)width, (float)height, 0);
-      GL20.glUniform1f(timeLoc, (System.currentTimeMillis() - millisInit) / 1000.0f);    
-      GL20.glEnableVertexAttribArray(vertLoc);
-      vertices.position(0);
-      GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-      GL20.glVertexAttribPointer(vertLoc, 2, false, 0, vertices);
-      GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);    
-      GL20.glDisableVertexAttribArray(vertLoc);
-      GL20.glUseProgram(0);
-      
-      // Compute current framerate and printout.
-      fcount += 1;
-      int m = (int) (System.currentTimeMillis() - millisInit);
-      if (m - lastm > 1000 * fint) {
-        frameRate = (float)(fcount) / fint;
-        fcount = 0;
-        lastm = m;
-      }      
-      
-      if (frameCount % 60 == 0) {
-        System.out.println("frame: " + frameCount +" - fps: " + frameRate);
-      }
-      
-      frameCount++;
-      
-      Display.sync(60);
-      Display.update();
+    GL20.glUseProgram(shaderProg);   
+    GL20.glUniform3f(resLoc, (float)width, (float)height, 0);
+    GL20.glUniform1f(timeLoc, (System.currentTimeMillis() - millisInit) / 1000.0f);    
+    GL20.glEnableVertexAttribArray(vertLoc);
+    vertices.position(0);
+    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    GL20.glVertexAttribPointer(vertLoc, 2, false, 0, vertices);
+    GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);    
+    GL20.glDisableVertexAttribArray(vertLoc);
+    GL20.glUseProgram(0);
+    
+    // Compute current framerate and printout.
+    fcount += 1;
+    int m = (int) (System.currentTimeMillis() - millisInit);
+    if (m - lastm > 1000 * fint) {
+      frameRate = (float)(fcount) / fint;
+      fcount = 0;
+      lastm = m;
+    }      
+    
+    if (frameCount % 60 == 0) {
+      System.out.println("frame: " + frameCount +" - fps: " + frameRate);
     }
     
-    Display.destroy();
+    frameCount++;
+    
+    Display.sync(60);
+    Display.update();    
   }
 }
