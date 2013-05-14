@@ -24,6 +24,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.util.glu.GLU;
 
 import test.utils.ShaderUtils;
 
@@ -58,7 +59,7 @@ public class DispApplet extends Applet implements Runnable {
   private int timeLoc;
   private int vertLoc;
   private FloatBuffer vertices;
-  
+    
   private int fcount = 0, lastm = 0;  
   private int fint = 1;      
     
@@ -129,6 +130,7 @@ public class DispApplet extends Applet implements Runnable {
     } else {
       setup();
     }
+    checkGLErrors();
     
     Display.update();
     if (!MANUAL_SYNC) {
@@ -225,6 +227,14 @@ public class DispApplet extends Applet implements Runnable {
     if (frameCount % TARGET_FPS == 0) {
       System.out.println("FrameCount: " + frameCount + " - " + 
                          "FrameRate: " + frameRate);
+    }    
+  }  
+  
+  private void checkGLErrors() {
+    int err = GL11.glGetError();
+    if (err != 0) {
+      String errString = GLU.gluErrorString(err);
+      System.out.println(errString);
     }    
   }  
   

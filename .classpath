@@ -7,5 +7,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="lwjgl-tests/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/lwjgl_util.jar" sourcepath="lib/lwjgl-source-2.9.0.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
