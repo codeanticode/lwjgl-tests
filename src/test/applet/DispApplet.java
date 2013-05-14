@@ -142,6 +142,7 @@ public class DispApplet extends Applet implements Runnable {
     canvas.requestFocus();
     canvas.setBackground(new Color(0xFFCCCCCC, true));   
     canvas.setBounds(0, 0, applet.width, applet.height);
+    canvas.setIgnoreRepaint(true);
     
     applet.setLayout(new BorderLayout());
     applet.add(canvas, BorderLayout.CENTER);
@@ -155,7 +156,7 @@ public class DispApplet extends Applet implements Runnable {
       float b = ((argb) & 0xff) / 255.0f; 
       Display.setInitialBackground(r, g, b); 
       Display.setParent(canvas);      
-      Display.create(format);
+      Display.create(format);      
     } catch (LWJGLException e) {
       e.printStackTrace();
     }
