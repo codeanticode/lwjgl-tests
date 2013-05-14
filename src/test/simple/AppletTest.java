@@ -3,6 +3,8 @@ package test.simple;
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.Frame;
 import java.io.File;
 import java.nio.FloatBuffer;
 
@@ -178,5 +180,19 @@ public class AppletTest extends Applet {
     
     Display.sync(60);
     Display.update();    
+  }  
+  
+  public Dimension getPreferredSize() {
+    return new Dimension(width, height);
+  }  
+  
+  static public void main(String[] args) {
+    Frame f = new Frame("test");
+    f.setLayout(new BorderLayout());
+    Applet test = new AppletTest();
+    f.add(test, BorderLayout.CENTER);
+    f.pack();
+    f.setVisible(true);
+    test.init();
   }
 }
