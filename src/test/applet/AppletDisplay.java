@@ -29,7 +29,7 @@ import org.lwjgl.util.glu.GLU;
 import test.utils.ShaderUtils;
 
 @SuppressWarnings("serial")
-public class DispApplet extends Applet implements Runnable {
+public class AppletDisplay extends Applet implements Runnable {
   static public int APPLET_WIDTH  = 500;
   static public int APPLET_HEIGHT = 290;
   static public int TARGET_FPS    = 120;
@@ -38,7 +38,7 @@ public class DispApplet extends Applet implements Runnable {
   //////////////////////////////////////////////////////////////////////////////
   
   static private Frame frame;
-  static private DispApplet applet;
+  static private AppletDisplay applet;
   private Canvas canvas;
   
   private int width;
@@ -172,14 +172,14 @@ public class DispApplet extends Applet implements Runnable {
         
     String vertSource = ""; 
     try {
-      vertSource = ShaderUtils.loadShaderSource(DispApplet.class.getResource("shaders" + File.separator + "landscape.vp"));
+      vertSource = ShaderUtils.loadShaderSource(AppletDisplay.class.getResource("shaders" + File.separator + "landscape.vp"));
     } catch (Exception e) {
       e.printStackTrace();
     }    
     
     String fragSource = ""; 
     try {
-      fragSource = ShaderUtils.loadShaderSource(DispApplet.class.getResource("shaders" + File.separator + "landscape.fp"));
+      fragSource = ShaderUtils.loadShaderSource(AppletDisplay.class.getResource("shaders" + File.separator + "landscape.fp"));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -249,8 +249,8 @@ public class DispApplet extends Applet implements Runnable {
     
     try {
       Class<?> c = Thread.currentThread().getContextClassLoader().
-          loadClass(DispApplet.class.getName());
-      applet = (DispApplet) c.newInstance();
+          loadClass(AppletDisplay.class.getName());
+      applet = (AppletDisplay) c.newInstance();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }    
